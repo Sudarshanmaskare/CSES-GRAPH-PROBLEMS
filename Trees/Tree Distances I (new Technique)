@@ -1,0 +1,69 @@
+You are given a tree consisting of n nodes.
+
+Your task is to determine for each node the maximum distance to another node.
+
+
+steps:
+1.find max depth for each node
+2.now for each node calculate maximum depth of child nodes and partial maximum ans for parent node by prefix and suffix
+
+vector<int> adj[200005];
+int depth[200005];
+int ans[200005];
+void max_depth(int node, int par) {
+    int src = 0;
+    for (auto var : adj[node]) {
+        if (var != par) {
+            max_depth(var, node);
+            src = max(src, 1 + depth[var]);
+        }
+    }
+    depth[node] = src;
+ 
+}
+void solve(int node, int par, int par_ans) {
+    vector<int> prefix, suffix;
+ 
+    for (auto var : adj[node]) {
+        if (var != par) {
+            prefix.push_back(depth[var]);
+            suffix.push_back(depth[var]);
+        }
+    }
+ 
+    for (int i = 1; i < prefix.size(); i++) {
+        prefix[i] = max(prefix[i], prefix[i - 1]);
+    }
+    for (int i = suffix.size() - 2; i >= 0; i--) {
+        suffix[i] = max(suffix[i], suffix[i + 1]);
+    }
+ 
+    int index = 0;
+    for (auto var : adj[node]) {
+        if (var != par) {
+            int op1 = (index == 0) ? INT_MIN : prefix[index - 1];
+            int op2 = (index == suffix.size() - 1) ? INT_MIN : suffix[index + 1];
+            int partial_ans = 1 + max(par_ans, max(op1, op2));
+            solve(var, node, partial_ans);
+            index++;
+        }
+    }
+    ans[node] = 1 + max(par_ans, (prefix.size() == 0) ? -1 : prefix.back());
+}
+void solve() {
+    int n;
+    cin >> n;
+    for (int i = 0; i < n - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+ 
+    max_depth(1, 0);
+    solve(1, 0, -1);
+ 
+    for (int i = 1; i <= n; i++) {
+        cout << ans[i] << " ";
+    }
+}
