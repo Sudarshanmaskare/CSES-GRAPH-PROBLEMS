@@ -1,0 +1,44 @@
+
+Syrjälä's network has n computers and m connections. Your task is to find out if Uolevi can send a message to Maija, and if it is possible,
+what is the minimum number of computers on such a route.
+
+
+vector<int> adj[200005];
+int parent[200005];
+bool vis[200005];
+int dis[200005];
+int k = 0;
+bool bfs(int n) {
+    queue<int> q;
+    vis[1] = true;
+    q.push(1);
+    parent[1] = 0;
+    while (!q.empty()) {
+        auto temp = q.front();
+        q.pop();
+        if (temp == n) {
+            k = dis[temp];
+            return true;
+        }
+        for (auto var : adj[temp]) {
+            if (!vis[var]) {
+                dis[var] = dis[temp] + 1;
+                vis[var] = true;
+                parent[var] = temp;
+                q.push(var);
+            }
+        }
+    }
+    return false;
+}
+void solve() {
+    int n, m;
+    cin >> n >> m;
+ 
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+ 
