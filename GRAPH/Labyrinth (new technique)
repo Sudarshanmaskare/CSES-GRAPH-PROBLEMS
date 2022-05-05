@@ -1,0 +1,88 @@
+You are given a map of a labyrinth, and your task is to find a path from start to end. You can walk left, right, up and down.
+
+Input :-
+
+The first input line has two integers n and m: the height and width of the map.
+
+Then there are n lines of m characters describing the labyrinth. Each character is . (floor), # (wall), A (start), or B (end). There is exactly one A and one B in the input.
+
+Output :-
+
+First print "YES", if there is a path, and "NO" otherwise.
+
+If there is a path, print the length of the shortest such path and its description as a string consisting of characters L (left), R (right), U (up), and D (down). You can print any valid solution.
+
+
+
+
+char mat[1002][1002];
+char dp[1002][1002];
+ 
+bool vis[1002][1002];
+vector<char> ans;
+bool isvalid(int x, int y, int n, int m) {
+    if (x < 0 || y < 0 || x >= n || y >= m) return false;
+    if (vis[x][y] || mat[x][y] == '#') return false;
+    return true;
+}
+ 
+bool bfs(int x, int y, int n, int m) {
+    queue<pair<int, int>> q;
+    q.push({x, y});
+    vis[x][y] = true;
+    while (q.size()) {
+        auto temp = q.front();
+        q.pop();
+        int a = temp.first, b = temp.second;
+ 
+        if (mat[a][b] == 'B') {
+            while (1) {
+                ans.push_back(dp[a][b]);
+                if (dp[a][b] == 'L') b++;
+                else if (dp[a][b] == 'R') b--;
+                else if (dp[a][b] == 'U')a++;
+                else if (dp[a][b] == 'D') a--;
+                if (a == x && b == y) {
+                    break;
+                }
+ 
+            }
+            return true;
+        }
+ 
+        if (isvalid(a, b - 1, n, m)) q.push({a, b - 1}), dp[a][b - 1] = 'L', vis[a][b - 1] = true;
+        if (isvalid(a, b + 1, n, m)) q.push({a, b + 1}), dp[a][b + 1] = 'R', vis[a][b + 1] = true;
+        if (isvalid(a - 1, b, n, m)) q.push({a - 1, b}), dp[a - 1][b] = 'U', vis[a - 1][b] = true;
+        if (isvalid(a + 1, b, n, m)) q.push({a + 1, b}), dp[a + 1][b] = 'D', vis[a + 1][b] = true;
+ 
+    }
+    return false;
+}
+//vector<char> ans;
+void solve() {
+    int n, m;
+    cin >> n >> m;
+ 
+    int x, y;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            cin >> mat[i][j];
+            //  cout << mat[i][j];
+            if (mat[i][j] == 'A') {
+                x = i;
+                y = j;
+            }
+        }
+        // cout << "\n";
+    }
+ 
+    if (bfs(x, y, n, m)) {
+        cout << "YES" << endl;
+        cout << ans.size() << "\n";
+        while (ans.size() > 0) cout << ans.back(), ans.pop_back();
+    }
+    else {
+        cout << "NO";
+    }
+ 
+}
