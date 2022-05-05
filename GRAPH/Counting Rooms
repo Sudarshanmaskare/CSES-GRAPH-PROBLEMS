@@ -1,0 +1,46 @@
+
+You are given a map of a building, and your task is to count the number of its rooms.
+The size of the map is n×m squares, and each square is either floor or wall. You can walk left, right, up, and down through the floor squares.
+
+
+
+
+
+void dfs(int i, int j, vector<vector<char>> &mat, int n, int m) {
+ 
+    if (i < 0 || j < 0 || i >= n || j >= m || mat[i][j] != '.') return;
+ 
+    mat[i][j] = '#';
+    dfs(i + 1, j, mat, n, m);
+    dfs(i - 1, j, mat, n, m);
+    dfs(i, j + 1, mat, n, m);
+    dfs(i, j - 1, mat, n, m);
+ 
+}
+void solve() {
+    int n, m;
+ 
+    cin >> n >> m;
+ 
+    vector<vector<char>> mat(n, vector<char>(m));
+ 
+    for (auto &var : mat) {
+        for (auto &every : var) {
+            cin >> every;
+        }
+    }
+ 
+    int ans = 0;
+ 
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (mat[i][j] == '.') {
+                //cout << "dff\n";
+                dfs(i, j, mat, n, m);
+                ans++;
+            }
+        }
+    }
+    cout << ans;
+ 
+}
