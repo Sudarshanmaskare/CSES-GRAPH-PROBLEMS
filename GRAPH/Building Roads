@@ -1,0 +1,42 @@
+Byteland has n cities, and m roads between them. The goal is to construct new roads so that there is a route between any two cities.
+
+Your task is to find out the minimum number of roads required, and also determine which roads should be built.
+
+vector<int> adj[100007];
+vector<bool> vis;
+void dfs(int i) {
+    vis[i] = true;
+    for (auto var : adj[i]) {
+        if (!vis[var]) {
+            dfs(var);
+        }
+    }
+}
+void solve() {
+    int n, e;
+    cin >> n >> e;
+    vis.resize(n + 1, false);
+    for (int i = 0; i < e; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    vector<int> ans;
+    for (int i = 1; i <= n; i++) {
+        if (adj[i].size() == 0) {
+            ans.push_back(i);
+            continue;
+        }
+        if (!vis[i] && adj[i].size()) {
+            ans.push_back(i);
+            dfs(i);
+        }
+    }
+    cout << ans.size() - 1 << "\n";
+    for (int i = 1; i < ans.size(); i++) {
+        cout << ans[i - 1] << " " << ans[i] << endl;
+    }
+ 
+ 
+}
