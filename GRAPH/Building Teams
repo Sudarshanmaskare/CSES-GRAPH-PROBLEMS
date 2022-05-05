@@ -1,0 +1,68 @@
+There are n pupils in Uolevi's class, and m friendships between them.
+Your task is to divide the pupils into two teams in such a way that no two pupils in a team are friends.
+You can freely choose the sizes of the teams.
+
+
+
+vector<int> adj[200005];
+int parent[200005];
+int col[200005];
+ 
+bool bfs(int n) {
+    // queue<int> q;
+    for (int i = 1; i <= n; i++) {
+        col[i] = -1;
+    }
+    queue<pair<int, int>> q;
+    for (int i = 1; i <= n; i++) {
+ 
+        if (col[i] == -1) {
+            col[i] = 0;
+            q.push({i, 0});
+ 
+            while (!q.empty()) {
+                auto var = q.front();
+                int c = var.second;
+                int node = var.first;
+                q.pop();
+ 
+                for (auto var : adj[node]) {
+                    if (col[var] == c) return false;
+ 
+                    if (col[var] == -1) {
+                        col[var] = (c) ? 0 : 1;
+                        q.push({var, col[var]});
+                    }
+                }
+            }
+        }
+    }
+    return true;
+}
+void solve() {
+    int n, m;
+    cin >> n >> m;
+ 
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+ 
+    if (bfs(n)) {
+        for (int i = 1; i <= n; i++) {
+            if (col[i] == 1) {
+                cout << 2 << " ";
+            }
+            else {
+                cout << 1 << " ";
+            }
+        }
+    }
+    else {
+        cout << "IMPOSSIBLE";
+    }
+ 
+ 
+}
