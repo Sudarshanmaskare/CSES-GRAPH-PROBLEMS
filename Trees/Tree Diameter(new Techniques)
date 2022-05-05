@@ -1,0 +1,67 @@
+You are given a tree consisting of n nodes.
+
+The diameter of a tree is the maximum distance between two nodes. Your task is to determine the diameter of the tree.
+
+
+
+solution 1 :
+vector<int> adj[200006];
+int vis[200005];
+int ans = 0, x = 0;
+void dfs(int node, int par, int d) {
+    for (auto var : adj[node]) {
+        if (var != par) {
+            dfs(var, node, d + 1);
+        }
+    }
+    if (ans < d) x = node, ans = d;
+}
+void solve() {
+    int n;
+    cin >> n;
+    for (int i = 0; i < n - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    //ans = 0;
+    dfs(1, -1, 0);
+    dfs(x, -1, 0);
+    cout << ans;
+}
+
+
+solution 2:
+
+vector<int> adj[200006];
+int dis[200005];
+int ans = 1, x = 0;
+void dfs(int node, int par) {
+    dis[node] = 1;
+    for (auto var : adj[node]) {
+        if (var != par) {
+            dfs(var, node);
+ 
+            ans = max(ans, dis[var] + dis[node]);
+            dis[node] = max(dis[node], 1 + dis[var]);
+        }
+    }
+}
+void solve() {
+    int n;
+    cin >> n;
+    if (n == 1) {
+        cout << 0;
+        return;
+    }
+    for (int i = 0; i < n - 1; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    //ans = 0;
+    dfs(1, -1);
+    cout << ans - 1;
+}
