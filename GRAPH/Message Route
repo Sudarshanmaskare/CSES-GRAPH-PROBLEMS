@@ -41,4 +41,23 @@ void solve() {
         adj[u].push_back(v);
         adj[v].push_back(u);
     }
+     if (bfs(n)) {
+        cout << k + 1 << "\n";
+        vector<int> ans;
+        while (n != 0) {
+            ans.push_back(n);
+            n = parent[n];
+        }
+        while (ans.size()) {
+            cout << ans.back() << " ";
+            ans.pop_back();
+        }
+    }
+    else {
+        cout << "IMPOSSIBLE";
+    }
+ 
+ 
+ 
+}
  
