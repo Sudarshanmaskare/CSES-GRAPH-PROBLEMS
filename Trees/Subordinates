@@ -1,0 +1,31 @@
+vector<int> dis;
+void post(unordered_map<int, vector<int>> &mp, int node) {
+ 
+    for (auto var : mp[node]) {
+        post(mp, var);
+        dis[node] += dis[var] + 1;
+    }
+}
+void solve() {
+    int n;
+ 
+    cin >> n;
+ 
+    unordered_map<int, vector<int>> mp;
+ 
+    int i = 2;
+    int cal = n;
+    while (--n) {
+        int temp;
+        cin >> temp;
+        mp[temp].push_back(i);
+        i++;
+    }
+    dis.resize(cal + 1, 0);
+    post(mp, 1);
+    for (int i = 1; i <= cal; i++) {
+        cout << dis[i] << " ";
+    }
+ 
+}
+ 
