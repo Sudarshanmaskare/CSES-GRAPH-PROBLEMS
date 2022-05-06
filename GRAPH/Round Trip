@@ -1,0 +1,75 @@
+Byteland has n cities and m roads between them.
+Your task is to design a round trip that begins in a city, goes through two or more other cities, and
+finally returns to the starting city. Every intermediate city on the route has to be distinct.
+
+Input:
+
+The first input line has two integers n and m: the number of cities and roads. The cities are numbered 1,2,…,n.
+
+Then, there are m lines describing the roads. Each line has two integers a and b: there is a road between those cities.
+
+Every road is between two different cities, and there is at most one road between any two cities.
+
+Output:
+
+First print an integer k: the number of cities on the route. Then print k cities in the order they will be visited. You can print any valid solution.
+
+If there are no solutions, print "IMPOSSIBLE".
+
+
+
+vector<int> adj[200005];
+int parent[200005];
+bool vis[200005];
+int dis[200005];
+int s_vertex, e_vertex;
+bool cycle(int node, int par) {
+    vis[node] = true;
+    parent[node] = par;
+    for (auto var : adj[node]) {
+        if (var == par) continue;
+        if (vis[var]) {
+            s_vertex = var;
+            e_vertex = node;
+            return true;
+        }
+        if (!vis[var] && cycle(var, node)) {
+
+            return true;
+        }
+    }
+    //ans.pop_back();
+    return false;
+}
+void solve() {
+    int n, m;
+    cin >> n >> m;
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    //  ans.push_back(1);
+    for (int i = 1; i <= n; i++) {
+        if ( !vis[i] && cycle(i , - 1)) {
+
+            vector<int> ans;
+            int cal = e_vertex;
+            while (e_vertex != s_vertex) {
+                ans.push_back(parent[e_vertex]);
+                e_vertex = parent[e_vertex];
+            }
+            cout << ans.size() + 2 << "\n";
+            cout << cal << " ";
+            while (ans.size() ) {
+                cout << ans.back() << " ";
+                ans.pop_back();
+            }
+            cout << cal << " ";
+            return ;
+
+        }
+    }
+    cout << "IMPOSSIBLE";
+}
