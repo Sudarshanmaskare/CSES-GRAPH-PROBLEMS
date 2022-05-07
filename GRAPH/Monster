@@ -1,0 +1,135 @@
+vector<vector<char>>  mat;
+int n, m;
+char dp[1002][1002];
+bool vis[1002][1002];
+int dis_person[1002][1002];
+int dis_monster[1002][1002];
+int dx[] = {0, 0, 1, -1};
+int dy[] = {1, -1, 0, 0};
+vector<char> ans;
+
+void fill_for_monster() {
+   
+   for(int i=0;i<n;i++){
+       for(int j=0;j<m;j++){
+           dis_monster[i][j]=INT_MAX;
+       }
+   }
+    queue<pair<int, int>> q;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (mat[i][j] == 'M') q.push({i, j}), dis_monster[i][j] = 0;
+        }
+    }
+    while (!q.empty()) {
+        auto temp = q.front();
+        int x = temp.first, y = temp.second;
+        q.pop();
+
+
+        for (int k = 0; k < 4; k++) {
+            int newx = x + dx[k], newy = y + dy[k];
+            if (newx >= 0 && newy >= 0 && newx < n && newy < m &&   mat[newx][newy]!='#' && dis_monster[newx][newy] > dis_monster[x][y] + 1) {
+                dis_monster[newx][newy] = dis_monster[x][y] + 1;
+           //     cout << dis_monster[newx][newy] << "\n";
+                q.push({newx, newy});
+            }
+        }
+    }
+
+    // for (int i = 0; i < n; i++) {
+    //     for (int j = 0; j < m; j++) {
+    //         if(mat[i][j]!='#')
+    //         cout << dis_monster[i][j];
+    //     }
+    //     cout << "\n";
+    // }
+}
+bool isvalid(int x, int y, int n, int m) {
+    return x >= 0 && y >= 0 && x < n && y < m && mat[x][y] != '#' && mat[x][y] != 'M' && !vis[x][y];
+}
+
+bool bfs(int sx,int sy){
+     queue<vector<int>> q;
+    q.push({sx, sy,0});
+    while (!q.empty()) {
+        auto temp = q.front();
+        q.pop();
+        int x = temp[0], y = temp[1],steps=temp[2];
+       // cout<<dis_monster[x][y]<<" "<<steps<<'\n';
+          if(x < 0 || x > n - 1 || y < 0 || y > m - 1 || mat[x][y] == '#' || dis_person[x][y] || (dis_monster[x][y] >= 0 and dis_monster[x][y] <= steps))
+                continue;
+        if (x == 0 || y == 0 || x == n - 1 || y == m - 1) {
+ 
+            while (1) {
+                if(dp[x][y]=='U' || dp[x][y]=='L' || dp[x][y]=='R' || dp[x][y]=='D')
+                ans.push_back(dp[x][y]);
+                if (dp[x][y] == 'L') y++;
+                else if (dp[x][y] == 'R') y--;
+                else if (dp[x][y] == 'U')x++;
+                else if (dp[x][y] == 'D') x--;
+                if (x == sx && y == sy) {
+                    break;
+                }
+            }
+            return true;
+        }
+        vis[x][y]=true;
+        dis_person[x][y]=steps;
+
+        if (isvalid(x + 1, y, n, m)) {
+            dp[x + 1][y] = 'D';
+            q.push({x + 1, y,steps+1});
+        }
+        if (isvalid(x - 1, y, n, m)) {
+            dp[x - 1][y] = 'U';
+            q.push({x - 1, y,steps+1});
+        }
+        if (isvalid(x, y + 1, n, m)) {
+            
+            dp[x][y + 1] = 'R';
+            q.push({x, y + 1,steps+1});
+ 
+        }
+        if (isvalid(x, y - 1, n, m)) {
+            dp[x][y - 1] = 'L';
+            q.push({x, y - 1,steps+1});
+ 
+        }
+ 
+    }
+    return false;
+}
+void solve() {
+
+    cin >> n >> m;
+
+    mat.resize(n, vector<char>(m));
+    int startx, starty;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            char temp;
+            cin >> temp;
+            mat[i][j] = temp;
+            if (temp == 'A') {
+                startx = i;
+                starty = j;
+            }
+        }
+    }
+   fill_for_monster();
+
+    if (bfs(startx, starty)) {
+        cout << "YES" << "\n";
+        cout << ans.size() << "\n";
+        while (ans.size()) {
+            cout << ans.back();
+            ans.pop_back();
+        }
+        return;
+    }
+ 
+    cout << "NO";
+
+
+}
