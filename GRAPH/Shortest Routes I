@@ -1,0 +1,55 @@
+There are n cities and m flight connections between them. Your task is to determine the length of the shortest route from Syrjälä to every city.
+
+Input
+
+The first input line has two integers n and m: the number of cities and flight connections. The cities are numbered 1,2,…,n, and city 1 is Syrjälä.
+
+After that, there are m lines describing the flight connections. Each line has three integers a, b and c:
+a flight begins at city a, ends at city b, and its length is c. Each flight is a one-way flight.
+
+
+
+vector<pair<long long int,long long int>> graph[200005];
+long long  int dis[200005];
+long long int vis[200005];
+void dijigstra(int v){
+    for(int i=0;i<=v;i++){
+        dis[i]=LLONG_MAX;
+    }
+ 
+    priority_queue<pair<long long int,long long int>,vector<pair<long long int,long long int>>,greater<pair<long long int,long long int>>>pq;
+    pq.push({0,1});
+    dis[1]=0;
+    while(pq.size()){
+        auto temp=pq.top();
+        pq.pop();
+ 
+        long long int d=temp.first,u=temp.second;
+        if(vis[u]) continue;
+        vis[u]=1;
+        for(auto var:graph[u]){
+            int x=var.first,newd=var.second;
+            if(dis[x]>dis[u]+newd){
+                dis[x]=dis[u]+newd;
+                pq.push({dis[x],x});
+            }
+        }
+ 
+    }
+    for(int i=1;i<=v;i++){
+        cout<<dis[i]<<" ";
+    }
+}
+ 
+ 
+void solve() {
+ 
+  int v,e;
+  cin>>v>>e;
+  for(int i=0;i<e;i++){
+      int u,v,d;
+      cin>>u>>v>>d;
+      graph[u].push_back({v,d});
+     // graph[v].push_back({u,d});
+  }
+ }
